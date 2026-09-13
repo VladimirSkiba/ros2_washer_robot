@@ -19,7 +19,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
-        launch_arguments=[('gz_args', '-r empty.sdf')]
+        launch_arguments=[('gz_args', '/home/laptop/ros2_washer_robot/washer_gazebo/worlds/cleaning_environment.sdf')]
     )
 
     # 2. Robot State Publisher (нужен для спавна)
@@ -36,10 +36,9 @@ def generate_launch_description():
         executable='parameter_bridge',
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-            '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
-            '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
-            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
-            '/tf@tf2_msgs/msg/TFMessage@gz.msgs.TFMessage'
+            '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',  # Двусторонний мост
+            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan'
         ],
         output='screen'
     )
@@ -48,7 +47,7 @@ def generate_launch_description():
     spawn = Node(
         package='ros_gz_sim',
         executable='create',
-        arguments=['-topic', 'robot_description', '-name', 'washer_robot', '-z', '0.5'],
+        arguments=['-topic', 'robot_description', '-name', 'washer_robot', '-z', '0.12'],
         output='screen'
     )
 
