@@ -348,7 +348,6 @@ sudo apt install -y \
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-cd ~/ros2_washer_robot
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 source install/setup.bash
@@ -362,7 +361,7 @@ source install/setup.bash
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_washer_robot/install/setup.bash
+source install/setup.bash
 ros2 launch washer_navigation full_simulation.launch.py mode:=keyboard
 ```
 

@@ -1,2 +1,0 @@
-<?xml version="1.0"?>
-<package format="3"><name>washer_teleop</name><version>0.1.0</version><description>Keyboard and scripted velocity control.</description><maintainer email="user@example.com">Washer Robot Team</maintainer><license>Apache-2.0</license><buildtool_depend>ament_cmake</buildtool_depend><exec_depend>rclpy</exec_depend><exec_depend>geometry_msgs</exec_depend><exec_depend>teleop_twist_keyboard</exec_depend><exec_depend>python3-yaml</exec_depend><export><build_type>ament_cmake</build_type></export></package>
