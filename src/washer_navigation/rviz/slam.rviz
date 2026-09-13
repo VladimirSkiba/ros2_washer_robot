@@ -1,0 +1,69 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /RobotModel1
+        - /LaserScan1
+        - /Map1
+        - /TF1
+        - /Path1
+      Splitter Ratio: 0.5
+    Tree Height: 700
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 1
+      Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Grid
+      Plane: XY
+      Plane Cell Count: 20
+      Reference Frame: <Fixed Frame>
+    - Alpha: 1
+      Class: rviz_default_plugins/RobotModel
+      Description Source: Topic
+      Description Topic: /robot_description
+      Enabled: true
+      Name: RobotModel
+    - Alpha: 1
+      Class: rviz_default_plugins/LaserScan
+      Color: 0; 255; 0
+      Enabled: true
+      Name: LaserScan
+      Size (m): 0.05
+      Style: Points
+      Topic: /scan
+    - Alpha: 0.7
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Enabled: true
+      Name: Map
+      Topic: /map
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+      Show Names: true
+      Show Axes: true
+    - Class: rviz_default_plugins/Path
+      Color: 255; 0; 0
+      Enabled: true
+      Name: Path
+      Topic: /slam_toolbox/trajectory
+  Global Options:
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/SetInitialPose
+    - Class: rviz_default_plugins/Goal
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Scale: 30
+      Target Frame: <Fixed Frame>
+Window Geometry:
+  Height: 900
+  Width: 1400

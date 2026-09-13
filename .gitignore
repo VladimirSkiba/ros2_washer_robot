@@ -1,0 +1,8 @@
+build/
+install/
+log/
+src/washer_navigation/logs/*.csv
+src/washer_navigation/maps/*
+!src/washer_navigation/maps/.gitkeep
+__pycache__/
+*.pyc

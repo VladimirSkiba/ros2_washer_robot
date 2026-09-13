@@ -1,0 +1,38 @@
+{
+  "name": "ROS 2 Jazzy Washer Robot",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/home/ros2_washer_robot",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros2_washer_robot,type=bind",
+  "remoteUser": "root",
+  "runArgs": [
+    "--env=DISPLAY=${localEnv:DISPLAY}",
+    "--env=QT_X11_NO_MITSHM=1",
+    "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw"
+  ],
+  "containerEnv": {
+    "ROS_DOMAIN_ID": "0",
+    "RCUTILS_COLORIZED_OUTPUT": "1",
+    "ROS2_WASHER_ROOT": "/home/ros2_washer_robot"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-iot.vscode-ros",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "postCreateCommand": "bash -lc 'source /opt/ros/jazzy/setup.bash && rosdep update --rosdistro jazzy && rosdep install --from-paths src --ignore-src -r -y && colcon build --symlink-install'",
+  "postStartCommand": "bash -lc 'source /opt/ros/jazzy/setup.bash && if [ -f install/setup.bash ]; then source install/setup.bash; fi'",
+  "remoteEnv": {
+    "PATH": "/opt/ros/jazzy/bin:${containerEnv:PATH}"
+  }
+}

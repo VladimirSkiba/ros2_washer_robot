@@ -1,0 +1,10 @@
+commands:
+  - linear: 0.3
+    angular: 0.0
+    duration: 30.0
+  - linear: 0.0
+    angular: 0.3
+    duration: 5.0
+  - linear: 0.3
+    angular: 0.0
+    duration: 8.0
