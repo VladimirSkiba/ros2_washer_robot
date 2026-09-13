@@ -8,9 +8,16 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros2_washer_robot,type=bind",
   "remoteUser": "root",
   "runArgs": [
-    "--env=DISPLAY=${localEnv:DISPLAY}",
+    "--network=host",
+    "--ipc=host",
+    "--env=DISPLAY=:0",
+    "--env=WAYLAND_DISPLAY=wayland-0",
+    "--env=XDG_RUNTIME_DIR=/tmp/xdg-runtime",
     "--env=QT_X11_NO_MITSHM=1",
-    "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw"
+    "--env=QT_QPA_PLATFORM=wayland;xcb",
+    "--volume=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg\\.X11-unix:/tmp/.X11-unix:rw",
+    "--volume=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg\\runtime-dir\\wayland-0:/tmp/xdg-runtime/wayland-0:rw",
+    "--volume=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg\\runtime-dir:/tmp/wslg-runtime:ro"
   ],
   "containerEnv": {
     "ROS_DOMAIN_ID": "0",
