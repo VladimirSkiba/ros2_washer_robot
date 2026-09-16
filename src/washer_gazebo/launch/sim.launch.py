@@ -9,8 +9,8 @@ def generate_launch_description():
     pkg_washer_description = get_package_share_directory('washer_description')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
     
-    # Читаем URDF
-    urdf_file = os.path.join(pkg_washer_description, 'urdf', 'robot.urdf')
+    # Просто читаем URDF файл
+    urdf_file = os.path.join(pkg_washer_description, 'urdf', 'robot_compiled.urdf')
     with open(urdf_file, 'r') as f:
         robot_description = f.read()
 
@@ -27,7 +27,10 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': robot_description, 'use_sim_time': True}]
+        parameters=[{
+            'robot_description': robot_description,
+            'use_sim_time': True
+        }]
     )
 
     # Мост между Gazebo и ROS 2
@@ -44,7 +47,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Спавн робота
     spawn = Node(
         package='ros_gz_sim',
         executable='create',
