@@ -8,18 +8,21 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
     pkg_washer_description = get_package_share_directory('washer_description')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
+    pkg_washer_gazebo = get_package_share_directory('washer_gazebo') 
     
     # Просто читаем URDF файл
     urdf_file = os.path.join(pkg_washer_description, 'urdf', 'robot_compiled.urdf')
     with open(urdf_file, 'r') as f:
         robot_description = f.read()
 
+    world_file = os.path.join(pkg_washer_gazebo, 'worlds', 'cleaning_environment.sdf')
+
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
         launch_arguments=[
-            ('gz_args', '-r /home/laptop/ros2_washer_robot/src/washer_gazebo/worlds/cleaning_environment.sdf')
+            ('gz_args', f'-r {world_file}')
         ]
     )
 
