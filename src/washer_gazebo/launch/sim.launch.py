@@ -19,7 +19,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
-        launch_arguments=[('gz_args', '/home/laptop/ros2_washer_robot/washer_gazebo/worlds/cleaning_environment.sdf')]
+        launch_arguments=[('gz_args', '-r','/home/laptop/ros2_washer_robot/washer_gazebo/worlds/cleaning_environment.sdf')]
     )
 
     # 2. Robot State Publisher (нужен для спавна)

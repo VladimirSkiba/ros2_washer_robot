@@ -140,4 +140,12 @@
       <child_frame_id>base_footprint</child_frame_id>
     </plugin>
   </gazebo>
+
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <joint_name>rear_left_wheel_joint</joint_name>
+      <joint_name>rear_right_wheel_joint</joint_name>
+      <topic>joint_states</topic>
+    </plugin>
+  </gazebo>
 </robot>
