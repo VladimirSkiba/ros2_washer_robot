@@ -55,7 +55,7 @@ ros2 launch washer_gazebo sim.launch.py
 
 ### Управление с клавиатуры 
 ```
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
+ros2 run washer_teleop keyboard_control.py
 ```
 ### Как пользоваться:
 * Нажми i — ехать вперед.
