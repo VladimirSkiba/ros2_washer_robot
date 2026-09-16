@@ -49,10 +49,10 @@ def generate_launch_description():
         ],
         output='screen',
         remappings=[
-            ('/scan', '/scan'),  # Оставляем топик как есть
+            ('/scan', '/scan'),  
         ],
         parameters=[{
-            'override_frame_id': 'lidar_link'  # Переопределяем frame_id
+            'override_frame_id': 'lidar_link'  
         }]
     )
 
