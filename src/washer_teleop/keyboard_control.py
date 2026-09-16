@@ -22,9 +22,11 @@ def get_key():
     # Отключаем обработку ввода терминалом
     tty.setraw(sys.stdin.fileno())
     # Читаем ввод с интервалом 0.1
-    rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
+    rlist, _, _ = select.select([sys.stdin], [], [], 1)
     if rlist:
         key = sys.stdin.read(1)  # Читаем один символ
+        if key == '\x03':
+            raise KeyboardInterrupt
     else:
         key = ''
     # Восстанавливаем настройки терминала
