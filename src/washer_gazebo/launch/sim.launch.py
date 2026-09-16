@@ -44,7 +44,13 @@ def generate_launch_description():
             '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model'
         ],
-        output='screen'
+        output='screen',
+        remappings=[
+            ('/scan', '/scan'),  # Оставляем топик как есть
+        ],
+        parameters=[{
+            'override_frame_id': 'lidar_link'  # Переопределяем frame_id
+        }]
     )
 
     spawn = Node(
