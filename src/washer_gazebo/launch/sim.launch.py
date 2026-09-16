@@ -14,15 +14,15 @@ def generate_launch_description():
     with open(urdf_file, 'r') as f:
         robot_description = f.read()
 
-    # 1. Запуск Gazebo (пустой мир)
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
-        launch_arguments=[('gz_args', '-r','/home/laptop/ros2_washer_robot/washer_gazebo/worlds/cleaning_environment.sdf')]
+        launch_arguments=[
+            ('gz_args', '-r /home/laptop/ros2_washer_robot/src/washer_gazebo/worlds/cleaning_environment.sdf')
+        ]
     )
 
-    # 2. Robot State Publisher (нужен для спавна)
     rsp = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -30,20 +30,21 @@ def generate_launch_description():
         parameters=[{'robot_description': robot_description, 'use_sim_time': True}]
     )
 
-    # 3. Мост между Gazebo и ROS 2 (топики)
+    # Мост между Gazebo и ROS 2
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-            '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',  # Двусторонний мост
+            '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
             '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
-            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan'
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model'
         ],
         output='screen'
     )
 
-    # 4. Спавн (появление) робота в мире
+    # Спавн робота
     spawn = Node(
         package='ros_gz_sim',
         executable='create',
