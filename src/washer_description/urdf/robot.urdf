@@ -13,7 +13,7 @@
     <parent link="base_footprint"/>
     <child link="base_link"/>
     <!-- Поднимаем центр робота на 0.4м над землей -->
-    <origin xyz="0 0 0.4" rpy="0 0 0"/>
+    <origin xyz="0 0 0.25" rpy="0 0 0"/> <!-- Поднимаем корпус на 25 см -->
   </joint>
 
   <!-- 2. КОРПУС (Base Link) -->
@@ -27,11 +27,10 @@
       <geometry><box size="0.9 0.55 0.5"/></geometry>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
     </collision>
-    <!-- ВАЖНО: Добавляем инерцию для Gazebo -->
     <inertial>
-      <mass value="50.0"/>
+      <mass value="5.0"/>  <!-- БЫЛО 50, СТАЛО 5 -->
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
-      <inertia ixx="2.0" ixy="0.0" ixz="0.0" iyy="2.5" iyz="0.0" izz="3.0"/>
+      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
 
@@ -57,7 +56,7 @@
   <joint name="rear_left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="rear_left_wheel"/>
-    <origin xyz="-0.3 0.28 -0.28" rpy="0 0 0"/> <!-- ИСПРАВЛЕНО Z -->
+    <origin xyz="-0.3 0.28 -0.13" rpy="0 0 0"/> <!-- ИСПРАВЛЕНО Z -->
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -79,29 +78,22 @@
   <joint name="rear_right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="rear_right_wheel"/>
-    <origin xyz="-0.3 -0.28 -0.28" rpy="0 0 0"/> <!-- ИСПРАВЛЕНО Z -->
+    <origin xyz="-0.3 -0.28 -0.13" rpy="0 0 0"/> <!-- ИСПРАВЛЕНО Z -->
     <axis xyz="0 1 0"/>
   </joint>
 
-  <!-- 4. ПЕРЕДНЕЕ КОЛЕСО (Кастер, Радиус 0.06м) -->
-  <!-- Центр на z=0.06. Смещение: 0.06 - 0.4 = -0.34 -->
+  <!-- КАСТЕР: ТОЛЬКО ВИЗУАЛ (как декорация) -->
   <link name="caster_wheel">
     <visual>
       <geometry><sphere radius="0.06"/></geometry>
       <material name="gray"/>
     </visual>
-    <collision>
-      <geometry><sphere radius="0.06"/></geometry>
-    </collision>
-    <inertial>
-      <mass value="0.5"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
   </link>
+
   <joint name="caster_wheel_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_wheel"/>
-    <origin xyz="0.35 0 -0.34" rpy="0 0 0"/> <!-- ИСПРАВЛЕНО Z -->
+    <origin xyz="0.35 0 -0.19" rpy="0 0 0"/>
   </joint>
 
   <!-- 5. ЛИДАР -->
@@ -154,6 +146,16 @@
     </sensor>
   </gazebo>
 
+  <!-- Улучшаем сцепление задних колёс с полом -->
+  <gazebo reference="rear_left_wheel">
+    <mu1>2.0</mu1>
+    <mu2>2.0</mu2>
+  </gazebo>
+  <gazebo reference="rear_right_wheel">
+    <mu1>2.0</mu1>
+    <mu2>2.0</mu2>
+  </gazebo>
+
   <!-- GAZEBO ПЛАГИНЫ -->
   <gazebo>
     <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
@@ -162,10 +164,13 @@
       <wheel_separation>0.56</wheel_separation>
       <wheel_radius>0.12</wheel_radius>
       <odom_publish_frequency>30</odom_publish_frequency>
-      <topic>cmd_vel</topic>
-      <odom_topic>odom</odom_topic>
+      <topic>/cmd_vel</topic>
+      <odom_topic>/odom</odom_topic>
       <frame_id>odom</frame_id>
       <child_frame_id>base_footprint</child_frame_id>
+      <publish_tf>false</publish_tf>
+      <max_wheel_torque>50</max_wheel_torque>
+      <max_wheel_acceleration>5.0</max_wheel_acceleration>
     </plugin>
   </gazebo>
 
