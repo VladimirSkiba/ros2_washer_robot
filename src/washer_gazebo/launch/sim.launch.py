@@ -10,8 +10,8 @@ def generate_launch_description():
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
     pkg_washer_gazebo = get_package_share_directory('washer_gazebo') 
     
-    # Просто читаем URDF файл
-    urdf_file = os.path.join(pkg_washer_description, 'urdf', 'robot_compiled.urdf')
+    
+    urdf_file = os.path.join(pkg_washer_description, 'urdf', 'robot.urdf')
     with open(urdf_file, 'r') as f:
         robot_description = f.read()
 
@@ -59,7 +59,7 @@ def generate_launch_description():
     spawn = Node(
         package='ros_gz_sim',
         executable='create',
-        arguments=['-topic', 'robot_description', '-name', 'washer_robot', '-z', '0.05'], # ИСПРАВЛЕНО
+        arguments=['-topic', 'robot_description', '-name', 'washer_robot', '-z', '0.04'], # ИСПРАВЛЕНО
         output='screen'
     )
 

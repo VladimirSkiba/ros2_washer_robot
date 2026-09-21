@@ -24,4 +24,8 @@ if(BUILD_TESTING)
 endif()
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY worlds DESTINATION share/${PROJECT_NAME})
+install(PROGRAMS
+  nodes/odom_tf_publisher.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 ament_package()

@@ -1,28 +1,82 @@
 # ROS 2 Washer Robot
 
-Симуляция робота-мойщика пола в Gazebo Harmonic. Роботом можно управлять с клавиатуры, а состояние и TF смотреть в RViz2.
+![ROS 2 Jazzy](https://img.shields.io/badge/ROS_2-Jazzy-22314E?logo=ros&logoColor=white)
+![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu&logoColor=white)
+![Gazebo Harmonic](https://img.shields.io/badge/Gazebo-Harmonic-FF6F00?logo=gazebo&logoColor=white)
+![C++](https://img.shields.io/badge/C++-17-00599C?logo=cplusplus&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)
 
-## Важно: Docker
+Симулятор мобильного робота-мойщика пола на базе ROS 2. Проект демонстрирует полный базовый цикл робототехнической разработки: описание робота в URDF, запуск физической симуляции в Gazebo Harmonic, управление с клавиатуры, публикацию одометрии и данных лидара, а также визуализацию модели и TF-дерева в RViz2.
 
-Dockerfile и Dev Container пока **не готовы к работе**. Запуск через Docker в текущем состоянии не поддерживается: контейнер не гарантирует корректное открытие окон Gazebo и RViz2.
+Цель проекта — создать воспроизводимую основу для дальнейшего развития автономной навигации: SLAM, построения карты и планирования маршрутов с Nav2.
 
-Используйте установку ROS 2 непосредственно на Ubuntu-хосте. Инструкция ниже рассчитана на Ubuntu 24.04, ROS 2 Jazzy и Gazebo Harmonic.
+## Демонстрация
 
-## Состав проекта
 
-- `washer_description` - URDF робота и конфигурация RViz2;
-- `washer_gazebo` - мир Gazebo, спавн робота и `ros_gz_bridge`;
-- `washer_teleop` - управление роботом клавишами `W`, `A`, `S`, `D`.
 
-Пакета `washer_navigation` в текущем исходном дереве нет. Поэтому команды для SLAM, записи траектории и `full_simulation.launch.py` пока не являются рабочими и в эту инструкцию не включены.
+![Симуляция робота-мойщика в Gazebo](docs/assets/gazebo.png)
 
-## Установка на Ubuntu-хост
+![Демонстрация работы в RViz2](docs/assets/rviz.png)
 
-### 1. Установить ROS 2 Jazzy
+## Возможности
 
-Если ROS 2 Jazzy еще не установлен, следуйте официальной инструкции для Ubuntu 24.04:
+- физическая симуляция робота-мойщика в Gazebo Harmonic;
+- параметрическое описание робота в URDF/Xacro;
+- управление движением с клавиатуры клавишами `W`, `A`, `S`, `D`;
+- публикация команд скорости через `/cmd_vel`;
+- получение одометрии через `/odom`;
+- получение данных лидара через `/scan`;
+- публикация и визуализация TF-дерева через `/tf` и `/tf_static`;
+- отдельный launch-файл для просмотра URDF в RViz2 без Gazebo.
 
-<https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html>
+## Архитектура проекта
+
+| Пакет | Назначение |
+| --- | --- |
+| `washer_description` | URDF/Xacro-модель робота и конфигурация RViz2 |
+| `washer_gazebo` | Мир Gazebo, спавн робота и `ros_gz_bridge` |
+| `washer_teleop` | Управление роботом с клавиатуры |
+
+## Стек
+
+- **ОС:** Ubuntu 24.04
+- **Middleware:** ROS 2 Jazzy
+- **Симуляция:** Gazebo Harmonic
+- **Визуализация:** RViz2
+- **Описание робота:** URDF/Xacro
+- **Языки:** Python, C++
+
+## Текущий статус и Roadmap
+
+### Реализовано
+
+- базовая симуляция мобильного робота в Gazebo Harmonic;
+- описание робота и сенсоров в URDF/Xacro;
+- управление с клавиатуры;
+- обмен данными между Gazebo и ROS 2 через `ros_gz_bridge`;
+- публикация `/cmd_vel`, `/odom`, `/scan`, `/tf` и `/tf_static`;
+- просмотр модели и состояния робота в RViz2.
+
+### В планах
+
+- интеграция SLAM Toolbox для построения карты помещения;
+- подключение Nav2 для автономной навигации и планирования маршрута;
+- сохранение карты и логирование траектории движения;
+- подготовка Dockerfile и Dev Container для воспроизводимого окружения;
+- добавление интеграционных тестов и автоматической проверки сборки.
+
+## Требования
+
+- Ubuntu 24.04;
+- ROS 2 Jazzy;
+- Gazebo Harmonic;
+- локальный графический сеанс Ubuntu для запуска Gazebo и RViz2.
+
+## Установка
+
+### 1. Установка ROS 2 Jazzy
+
+Если ROS 2 Jazzy еще не установлен, следуйте [официальной инструкции для Ubuntu 24.04](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html).
 
 После установки проверьте, что ROS доступен:
 
@@ -31,7 +85,7 @@ source /opt/ros/jazzy/setup.bash
 ros2 --version
 ```
 
-### 2. Установить зависимости проекта
+### 2. Установка зависимостей проекта
 
 ```bash
 sudo apt update
@@ -50,11 +104,11 @@ Gazebo Harmonic устанавливается вместе с пакетом `r
 gz sim --version
 ```
 
-### 3. Скачать проект и собрать workspace
+### 3. Клонирование и сборка workspace
 
 ```bash
 cd ~
-git clone https://github.com/VladimirSkiba/ros2_washer_robot.git я
+git clone https://github.com/VladimirSkiba/ros2_washer_robot.git
 cd ~/ros2_washer_robot
 
 source /opt/ros/jazzy/setup.bash
@@ -75,9 +129,9 @@ source install/setup.bash
 
 После изменения `package.xml`, `CMakeLists.txt` или URDF повторяйте `colcon build --symlink-install`.
 
-## Запуск проекта
+## Запуск симуляции
 
-Окна Gazebo и RViz2 могут не открываться из встроенного терминала VS Code. Для запуска используйте обычный терминал Ubuntu. Удобный вариант - Terminator:
+Окна Gazebo и RViz2 могут не открываться из встроенного терминала VS Code. Для запуска используйте обычный терминал Ubuntu. Для удобной работы в нескольких терминалах можно установить Terminator:
 
 ```bash
 sudo apt install terminator
@@ -86,10 +140,10 @@ sudo apt install terminator
 ### Горячие клавиши Terminator
 
 | Сочетание | Действие |
-|---|---|
-| `Ctrl+Shift+O` | разделить окно по горизонтали |
-| `Ctrl+Shift+E` | разделить окно по вертикали |
-| `Alt+Стрелки` | переключиться между областями |
+| --- | --- |
+| `Ctrl+Shift+O` | Разделить окно по горизонтали |
+| `Ctrl+Shift+E` | Разделить окно по вертикали |
+| `Alt+Стрелки` | Переключиться между областями |
 
 В каждом новом терминале сначала выполните:
 
@@ -99,14 +153,16 @@ source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ```
 
-Можно использовать готовый скрипт:
+Или используйте готовый скрипт:
 
 ```bash
 cd ~/ros2_washer_robot
 source env.sh
 ```
 
-### Терминал 1: Gazebo
+Запустите процессы в отдельных терминалах.
+
+### 1. Gazebo
 
 ```bash
 ros2 launch washer_gazebo sim.launch.py
@@ -114,34 +170,32 @@ ros2 launch washer_gazebo sim.launch.py
 
 Должно открыться окно Gazebo с помещением и роботом. Не закрывайте этот терминал во время работы.
 
-### Терминал 2: RViz2
+### 2. RViz2
 
 ```bash
 rviz2 -d ~/ros2_washer_robot/src/washer_description/rviz/lidar_vizion.rviz
 ```
 
-Если RViz запущен без конфигурации, выберите `base_link` как `Fixed Frame` и добавьте `RobotModel` с источником `/robot_description`.
+Если RViz2 запущен без конфигурации, выберите `base_link` как `Fixed Frame` и добавьте `RobotModel` с источником `/robot_description`.
 
-### Терминал 3: управление клавиатурой
+### 3. Управление с клавиатуры
 
 ```bash
 ros2 run washer_teleop keyboard_control.py
 ```
 
-Клавиши управления:
-
 | Клавиша | Действие |
-|---|---|
-| `W` | движение вперед |
-| `S` | движение назад |
-| `A` | поворот влево |
-| `D` | поворот вправо |
-| `Space` или `K` | остановка |
-| `Ctrl+C` | выход |
+| --- | --- |
+| `W` | Движение вперед |
+| `S` | Движение назад |
+| `A` | Поворот влево |
+| `D` | Поворот вправо |
+| `Space` или `K` | Остановка |
+| `Ctrl+C` | Выход |
 
 ## Быстрая проверка
 
-В отдельном терминале, после запуска Gazebo, можно проверить основные topics:
+В отдельном терминале после запуска Gazebo можно проверить основные topics:
 
 ```bash
 ros2 topic list
@@ -152,11 +206,11 @@ ros2 topic info /cmd_vel
 
 Ожидаемые topics:
 
-- `/cmd_vel` - команды скорости;
-- `/odom` - одометрия робота;
-- `/scan` - данные лидара;
-- `/tf` и `/tf_static` - TF-дерево;
-- `/robot_description` - URDF робота.
+- `/cmd_vel` — команды скорости;
+- `/odom` — одометрия робота;
+- `/scan` — данные лидара;
+- `/tf` и `/tf_static` — TF-дерево;
+- `/robot_description` — URDF робота.
 
 Для разовой проверки движения можно отправить команду вручную:
 
@@ -183,15 +237,24 @@ ros2 launch washer_description display.launch.py
 
 Этот launch-файл запускает `robot_state_publisher`, `joint_state_publisher` и RViz2.
 
+## Устранение неполадок
 
-### Команда ROS 2 не найдена
+<details>
+<summary>Команда ROS 2 не найдена</summary>
+
+Подключите окружение ROS 2 и workspace:
 
 ```bash
 source /opt/ros/jazzy/setup.bash
 source ~/ros2_washer_robot/install/setup.bash
 ```
 
-### Пакет не найден после сборки
+</details>
+
+<details>
+<summary>Пакет не найден после сборки</summary>
+
+Перейдите в workspace, пересоберите проект и обновите окружение:
 
 ```bash
 cd ~/ros2_washer_robot
@@ -201,7 +264,10 @@ source install/setup.bash
 ros2 pkg list | grep washer
 ```
 
-### Робот не двигается
+</details>
+
+<details>
+<summary>Робот не двигается</summary>
 
 Убедитесь, что Gazebo запущен, а `keyboard_control.py` работает в отдельном терминале. Затем проверьте:
 
@@ -210,9 +276,21 @@ ros2 topic echo /cmd_vel
 ros2 topic info /cmd_vel
 ```
 
+</details>
+
+<details>
+<summary>Окна Gazebo или RViz2 не открываются</summary>
+
+Запускайте графические приложения из обычного терминала Ubuntu, а не из встроенного терминала VS Code. Для работы нужен локальный графический сеанс Ubuntu или корректно настроенный X11/Wayland.
+
+</details>
+
 ## Ограничения текущей версии
 
-- Docker и Dev Container пока нерабочие и не используются в инструкции запуска.
-- SLAM Toolbox, Nav2, сохранение карты и логирование траектории отсутствуют в текущем исходном дереве.
-- Для работы GUI нужен локальный графический сеанс Ubuntu или корректно настроенный X11/Wayland.
-- После пересборки необходимо заново выполнить `source install/setup.bash`.
+- Docker и Dev Container находятся в roadmap и не используются в текущем сценарии запуска;
+- SLAM Toolbox, Nav2, сохранение карты и логирование траектории пока отсутствуют в исходном дереве;
+- после пересборки необходимо заново выполнить `source install/setup.bash`.
+
+## Лицензия
+
+Лицензия проекта будет добавлена в отдельном обновлении.
