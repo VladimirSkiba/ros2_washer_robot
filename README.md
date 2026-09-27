@@ -62,7 +62,6 @@
 - интеграция SLAM Toolbox для построения карты помещения;
 - подключение Nav2 для автономной навигации и планирования маршрута;
 - сохранение карты и логирование траектории движения;
-- подготовка Dockerfile и Dev Container для воспроизводимого окружения;
 - добавление интеграционных тестов и автоматической проверки сборки.
 
 ## Требования
@@ -71,6 +70,7 @@
 - ROS 2 Jazzy;
 - Gazebo Harmonic;
 - локальный графический сеанс Ubuntu для запуска Gazebo и RViz2.
+- для запуска в контейнере: Docker, VS Code и расширение Dev Containers.
 
 ## Установка
 
@@ -129,6 +129,27 @@ source install/setup.bash
 
 После изменения `package.xml`, `CMakeLists.txt` или URDF повторяйте `colcon build --symlink-install`.
 
+## Работа в Docker
+
+В репозитории настроен Dev Container на базе ROS 2 Jazzy. Конфигурация автоматически устанавливает ROS 2, Gazebo, RViz2 и зависимости проекта, а также пробрасывает графический сеанс для запуска Gazebo и RViz2.
+
+1. Установите [Docker Engine](https://docs.docker.com/engine/install/) и расширение [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) для VS Code.
+2. Откройте корневую папку проекта `/workspace` в VS Code.
+3. Выполните команду `Dev Containers: Reopen in Container` через Command Palette (`Ctrl+Shift+P`).
+4. Дождитесь сборки образа и откройте новый терминал VS Code внутри контейнера.
+
+В контейнере соберите workspace и подключите его окружение:
+
+```bash
+cd /workspace
+source /opt/ros/jazzy/setup.bash
+rosdep install --from-paths src --ignore-src -r -y
+colcon build --symlink-install
+source install/setup.bash
+```
+
+После этого используйте команды запуска из раздела [«Запуск симуляции»](#запуск-симуляции). Состояние workspace сохраняется на хосте, потому что каталог проекта подключен в контейнер как `/workspace`.
+
 ## Запуск симуляции
 
 Окна Gazebo и RViz2 могут не открываться из встроенного терминала VS Code. Для запуска используйте обычный терминал Ubuntu. Для удобной работы в нескольких терминалах можно установить Terminator:
@@ -146,16 +167,32 @@ sudo apt install terminator
 | `Alt+Стрелки` | Переключиться между областями |
 
 
-### все запущенные контейнеры и их id
+### Посмотреть запущенные контейнеры и их ID
 
+```bash
+docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
 ```
-docker ps
+
+В выводе будут показаны короткий ID, имя и состояние каждого запущенного контейнера.
+
+### Открыть shell внутри контейнера
+
+```bash
+docker exec -it <id_контейнера_или_имя> bash
 ```
 
-### Войти в контейнер по ID
+После входа перейдите в workspace и подключите окружение:
 
-``` 
-docker exec -it <id_контейнера> bash
+```bash
+cd /workspace
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+```
+
+Чтобы выйти из контейнера, выполните:
+
+```bash
+exit
 ```
 
 В каждом новом терминале сначала выполните:
@@ -300,7 +337,6 @@ ros2 topic info /cmd_vel
 
 ## Ограничения текущей версии
 
-- Docker и Dev Container находятся в roadmap и не используются в текущем сценарии запуска;
 - SLAM Toolbox, Nav2, сохранение карты и логирование траектории пока отсутствуют в исходном дереве;
 - после пересборки необходимо заново выполнить `source install/setup.bash`.
 
