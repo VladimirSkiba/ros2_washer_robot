@@ -1,6 +1,7 @@
 
 {
     "name": "ROS 2 Jazzy Washer Robot",
+    "initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/setup-xhost.sh",
     "build": {
         "dockerfile": "Dockerfile",
         "context": ".."

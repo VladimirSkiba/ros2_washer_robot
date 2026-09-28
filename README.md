@@ -131,24 +131,137 @@ source install/setup.bash
 
 ## Работа в Docker
 
-В репозитории настроен Dev Container на базе ROS 2 Jazzy. Конфигурация автоматически устанавливает ROS 2, Gazebo, RViz2 и зависимости проекта, а также пробрасывает графический сеанс для запуска Gazebo и RViz2.
+В репозитории настроен Dev Container на базе ROS 2 Jazzy. Конфигурация автоматически устанавливает ROS 2, Gazebo Harmonic, RViz2 и необходимые зависимости проекта.
+
+Контейнер также настроен для запуска графических приложений Gazebo и RViz2 с отображением окон на рабочем столе Ubuntu.
+
+### Требования
+
+- Ubuntu 24.04;
+- Docker;
+- VS Code;
+- расширение [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers);
+- локальный графический сеанс Ubuntu.
+
+### Запуск Dev Container
 
 1. Установите [Docker Engine](https://docs.docker.com/engine/install/) и расширение [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) для VS Code.
-2. Откройте корневую папку проекта `/workspace` в VS Code.
-3. Выполните команду `Dev Containers: Reopen in Container` через Command Palette (`Ctrl+Shift+P`).
-4. Дождитесь сборки образа и откройте новый терминал VS Code внутри контейнера.
+2. Клонируйте репозиторий и откройте его в VS Code:
 
-В контейнере соберите workspace и подключите его окружение:
+```
+git clone https://github.com/VladimirSkiba/ros2_washer_robot.git
+cd ros2_washer_robot
+code .
+```
 
-```bash
+1. Выполните команду `Dev Containers: Reopen in Container` через Command Palette (`Ctrl+Shift+P`).
+2. При создании контейнера скрипт `.devcontainer/setup-xhost.sh` автоматически выполняет:
+
+```
+xhost +SI:localuser:root
+```
+
+Это разрешает приложениям, запущенным от `root` внутри контейнера, подключаться к графическому серверу Ubuntu.
+
+> Если скрипт ещё не имеет права на выполнение, один раз выполните на хосте:
+>
+> ```
+> sudo chmod +x .devcontainer/setup-xhost.sh
+> ```
+> После этого `xhost` будет запускаться автоматически при создании или пересборке Dev Container.
+
+### Сборка workspace
+
+После открытия контейнера выполните:
+
+```
 cd /workspace
+
 source /opt/ros/jazzy/setup.bash
+
 rosdep install --from-paths src --ignore-src -r -y
+
 colcon build --symlink-install
+
 source install/setup.bash
 ```
 
-После этого используйте команды запуска из раздела [«Запуск симуляции»](#запуск-симуляции). Состояние workspace сохраняется на хосте, потому что каталог проекта подключен в контейнер как `/workspace`.
+Исходный код проекта и результаты сборки доступны на хосте, поскольку каталог проекта подключается в контейнер как `/workspace`.
+
+### Проверка графического интерфейса
+
+После запуска контейнера можно проверить RViz2:
+
+```
+rviz2
+```
+
+И Gazebo:
+
+```
+gz sim
+```
+
+Оба приложения должны открыть свои окна непосредственно на рабочем столе Ubuntu.
+
+### Пересборка контейнера
+
+Если были изменены `Dockerfile` или `devcontainer.json`, выполните в VS Code:
+
+`Ctrl+Shift+P` → `Dev Containers: Rebuild Container`
+
+При пересборке `setup-xhost.sh` также выполняется автоматически.
+
+### Работа с уже запущенным контейнером
+
+Если необходимо открыть дополнительный терминал внутри уже запущенного контейнера:
+
+```
+docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
+```
+
+Затем:
+
+```
+docker exec -it <id_контейнера_или_имя> bash
+```
+
+После входа:
+
+```
+cd /workspace
+
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+```
+
+Для выхода:
+
+```
+exit
+```
+
+### Запуск проекта
+
+После сборки используйте команды из раздела [«Запуск симуляции»](#запуск-симуляции).
+
+Например:
+
+```
+ros2 launch washer_gazebo sim.launch.py
+```
+
+В отдельном терминале:
+
+```
+rviz2 -d /workspace/src/washer_description/rviz/lidar_vizion.rviz
+```
+
+И для управления:
+
+```
+ros2 run washer_teleop keyboard_control.py
+```
 
 ## Запуск симуляции
 
